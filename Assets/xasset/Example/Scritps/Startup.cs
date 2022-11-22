@@ -29,8 +29,26 @@ namespace xasset.example
             if (!Assets.SimulationMode && !Downloader.SimulationMode)
                 Assets.UpdateURL = $"{baseUpdateURL}/{Assets.Platform}/{UpdateInfo.Filename}";
 
-            var initializeAsync = Assets.InitializeAsync();
+            var initializeAsync = Assets.InitializeAsync();     //todo wht ref 非仿真模式下，这里会失败
             yield return initializeAsync;
+
+            if (false)
+            {
+                // 获取服务器的更新信息。 
+                var getUpdateInfoAsync = Assets.GetUpdateInfoAsync();
+                yield return getUpdateInfoAsync;
+                if (getUpdateInfoAsync.result == Request.Result.Success)
+                {
+                    var getVersionsAsync = Assets.GetVersionsAsync(getUpdateInfoAsync.info);
+                    yield return getVersionsAsync;
+                    if (getVersionsAsync.versions != null)
+                    {
+                        getVersionsAsync.versions.Save(Assets.GetDownloadDataPath(Versions.Filename));
+                        Assets.Versions = getVersionsAsync.versions;
+                    }
+                }
+            }
+
             yield return Asset.LoadAsync(MessageBox.Filename, typeof(GameObject));
             yield return Asset.InstantiateAsync(LoadingScreen.Filename);
             LoadingScreen.Instance.SetVisible(false);

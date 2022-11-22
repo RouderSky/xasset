@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace xasset.editor
 {
+    //todo wht ref 仿真模式的初始化器
     public struct InitializeRequestHandlerSimulation : InitializeRequestHandler
     {
         public void OnUpdated()
